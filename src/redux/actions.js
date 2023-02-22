@@ -7,30 +7,26 @@ export const fetchRepositories = createAsyncThunk(
 		try {
 			const response = await fetchRepositoriesByQuery(data);
 
-			if (response.status === 200) {
-				const filltredArr = response.data.items.map((item) => {
-					const {
-						description,
-						full_name,
-						language,
-						stargazers_count,
-						watchers,
-						owner: { avatar_url, login },
-					} = item;
-					return {
-						avatar_url,
-						description,
-						full_name,
-						language,
-						login,
-						stargazers_count,
-						watchers,
-					};
-				});
-				return { total_count: response.data.total_count, items: filltredArr };
-			} else {
-				throw new Error('Server error');
-			}
+			const filltredArr = response.data.items.map((item) => {
+				const {
+					description,
+					full_name,
+					language,
+					stargazers_count,
+					watchers,
+					owner: { avatar_url, login },
+				} = item;
+				return {
+					avatar_url,
+					description,
+					full_name,
+					language,
+					login,
+					stargazers_count,
+					watchers,
+				};
+			});
+			return { total_count: response.data.total_count, items: filltredArr };
 		} catch (error) {
 			return rejectWithValue(error.message);
 		}
