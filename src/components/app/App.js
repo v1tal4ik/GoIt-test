@@ -3,6 +3,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useForm } from 'react-hook-form';
 
+import { UseDebounce } from '../../helpers/useDebounce';
+
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 
@@ -35,12 +37,16 @@ const App = () => {
 
 	const isFirstRun = useRef(true);
 
+	const searchRepositoriesParamsDebounce = UseDebounce((params) => {
+		return dispatch(fetchRepositories(params));
+	}, 1000);
+
 	useEffect(() => {
 		// Reset pagination
 
 		setPage(1);
 
-		dispatch(fetchRepositories({ query, page }));
+		searchRepositoriesParamsDebounce({ query, page });
 	}, [query]);
 
 	useEffect(() => {
@@ -51,7 +57,7 @@ const App = () => {
 			return;
 		}
 
-		dispatch(fetchRepositories({ query, page }));
+		searchRepositoriesParamsDebounce({ query, page });
 	}, [page]);
 
 	return (
